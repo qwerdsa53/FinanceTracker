@@ -32,6 +32,9 @@ public class User {
     private boolean enabled;
 
     @Column(nullable = false)
+    private String role;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
