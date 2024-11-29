@@ -17,7 +17,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     // Сумма по категориям
     @Query("SELECT t.category, SUM(t.amount) FROM Transaction t WHERE t.user.id = :userId GROUP BY t.category")
     List<Object[]> getTotalAmountByCategory(@Param("userId") Long userId);
-
-    
     List<Transaction> findByUser(@Param("userId") Long userId);
 }

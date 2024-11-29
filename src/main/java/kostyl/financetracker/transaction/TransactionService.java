@@ -1,5 +1,4 @@
 package kostyl.financetracker.transaction;
-import kostyl.financetracker.transaction.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
