@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,25 +27,29 @@ public class AnalyticService {
     }
 
     public Double getTotalIncomeByUser(Long userId) {
-        Double incomes = transactionRepository.getTotalAmountByUserAndType(userId,INCOME);
+        Double incomes = transactionRepository.getTotalAmountByUserAndType(userId, INCOME);
 
-        if (incomes == null ) { incomes = 0.0; }
+        if (incomes == null) {
+            incomes = 0.0;
+        }
         return incomes;
     }
 
     public Double getTotalExpensesByUser(Long userId) {
-        Double expenses = transactionRepository.getTotalAmountByUserAndType(userId,EXPENSE);
-        if (expenses == null) { expenses = 0.0; }
+        Double expenses = transactionRepository.getTotalAmountByUserAndType(userId, EXPENSE);
+        if (expenses == null) {
+            expenses = 0.0;
+        }
         return expenses;
     }
 
     public Double getUserBalance(Long userId) {
-        Double incomes = transactionRepository.getTotalAmountByUserAndType(userId,INCOME);
-        Double expenses = transactionRepository.getTotalAmountByUserAndType(userId,EXPENSE);
-        if (incomes == null ) {
+        Double incomes = transactionRepository.getTotalAmountByUserAndType(userId, INCOME);
+        Double expenses = transactionRepository.getTotalAmountByUserAndType(userId, EXPENSE);
+        if (incomes == null) {
             incomes = 0.0;
         }
-        if (expenses == null ) {
+        if (expenses == null) {
             expenses = 0.0;
         }
         return incomes - expenses;

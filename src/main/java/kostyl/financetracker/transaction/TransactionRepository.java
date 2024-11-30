@@ -1,6 +1,7 @@
 package kostyl.financetracker.transaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -10,6 +11,33 @@ import java.util.List;
 
 @RepositoryRestResource(collectionResourceRel = "transactions", path = "transactions")
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
+    @Modifying
+    @Query("SELECT e FROM Transaction e WHERE e.user.id = :userId")
+    List<Transaction> findAllForCurrentUser(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("DELETE FROM Transaction t WHERE t.id = :transactionId AND t.user.id = :userId")
+    int deleteByIdAndUserId(
+            @Param("transactionId") Long transactionId,
+            @Param("userId") Long userId
+    );
+
+    @Modifying
+    @Query("UPDATE Transaction t SET t.amount = :amount, t.description = :description, t.category = :category, " +
+            "t.date = :date, t.type = :type WHERE t.id = :transactionId AND t.user.id = :userId")
+    int updateTransactionByIdAndUserId(
+            @Param("transactionId") Long transactionId,
+            @Param("userId") Long userId,
+            @Param("amount") Double amount,
+            @Param("category") CategoryType category,
+            @Param("description") String description,
+            @Param("date") LocalDate date,
+            @Param("type") TransactionType type
+    );
+
+
+
     // Общая сумма транзакций пользователя
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.user.id = :userId")
     Double getTotalAmountByUser(@Param("userId") Long userId);

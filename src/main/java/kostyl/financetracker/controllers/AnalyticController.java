@@ -22,12 +22,12 @@ public class AnalyticController {
     }
 
     @GetMapping("/income/{userId}")
-    public Double getTotalIncomeByUser(@PathVariable Long userId){
+    public Double getTotalIncomeByUser(@PathVariable Long userId) {
         return analyticService.getTotalIncomeByUser(userId);
     }
 
     @GetMapping("/expenses/{userId}")
-    public Double getTotalExpensesByUser(@PathVariable Long userId){
+    public Double getTotalExpensesByUser(@PathVariable Long userId) {
         return analyticService.getTotalExpensesByUser(userId);
     }
 
