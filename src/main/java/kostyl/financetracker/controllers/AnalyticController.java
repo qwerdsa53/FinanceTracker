@@ -64,4 +64,34 @@ public class AnalyticController {
     public CategoryStatisticsDTO getCategorySummary(@PathVariable Long userId) {
         return analyticService.getCategorySummary(userId);
     }
+
+    // Транзакции пользователя за период
+    @GetMapping("/transactions/{userId}")
+    public List<Object[]> getTransactionsByUserAndDateRange(
+            @PathVariable Long userId,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        return analyticService.getTransactionsByUserAndDateRange(
+                userId, LocalDate.parse(startDate), LocalDate.parse(endDate));
+    }
+
+    // Сумма расходов пользователя за неделю/месяц
+    @GetMapping("/expenses_time/{userId}")
+    public Double getTotalExpensesByDateRange(
+            @PathVariable Long userId,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        return analyticService.getTotalExpensesByUserAndDateRange(
+                userId, LocalDate.parse(startDate), LocalDate.parse(endDate));
+    }
+
+    // Статистика доходов/расходов по категориям за период
+    @GetMapping("/statistics/{userId}")
+    public List<CategoryStatisticsDTO> getCategoryStatisticsByDateRange(
+            @PathVariable Long userId,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        return analyticService.getCategoryStatisticsByDateRange(
+                userId, LocalDate.parse(startDate), LocalDate.parse(endDate));
+    }
 }

@@ -87,4 +87,26 @@ public class AnalyticService {
         return null;
     }
 
+    // Все транзакции пользователя за период
+    public List<Object[]> getTransactionsByUserAndDateRange(Long userId, LocalDate startDate, LocalDate endDate) {
+        return transactionRepository.getTransactionsByUserAndDateRange(userId, startDate, endDate);
+    }
+
+    // Сумма расходов пользователя за неделю/месяц
+    public Double getTotalExpensesByUserAndDateRange(Long userId, LocalDate startDate, LocalDate endDate) {
+        Double totalExpenses = transactionRepository.getTotalExpensesByUserAndDateRange(userId, startDate, endDate);
+        return totalExpenses != null ? totalExpenses : 0.0;
+    }
+
+    // Статистика доходов/расходов по категориям за период
+    public List<CategoryStatisticsDTO> getCategoryStatisticsByDateRange(Long userId, LocalDate startDate, LocalDate endDate) {
+        return transactionRepository.getCategoryStatisticsByDateRange(userId, startDate, endDate)
+                .stream()
+                .map(result -> new CategoryStatisticsDTO(
+                        (CategoryType) result[0],  // Category
+                        (Double) result[1]  // amount
+                ))
+                .collect(Collectors.toList());
+    }
+
 }
