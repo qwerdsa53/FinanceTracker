@@ -32,11 +32,27 @@ public class RedisConfig {
     }
 
     @Bean
+    public LettuceConnectionFactory uuidConnectionFactory() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setDatabase(1); // bd №1
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    @Bean
     public RedisTemplate<String, String> jwtRedisTemplate(LettuceConnectionFactory jwtConnectionFactory) {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(jwtConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, Long> uuidRedisTemplate(LettuceConnectionFactory uuidConnectionFactory) {
+        RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(uuidConnectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericToStringSerializer<>(Long.class));
         return template;
     }
 }

@@ -1,5 +1,8 @@
 package kostyl.financetracker.user;
 
+import jakarta.transaction.Transactional;
+import kostyl.financetracker.email.EmailService;
+import kostyl.financetracker.email.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
@@ -12,7 +15,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final EmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
     @Async
     public void registerUser(UserRegistrationDto userDto) {
@@ -26,6 +31,13 @@ public class UserService {
                 .build();
         try {
             userRepository.save(user);
+            String token = tokenService.addTokenToRedis(user.getId());
+            emailService.sendEmail(
+                    user.getEmail(),
+                    "Welcome to TrackMyFinance!",
+                    "Thank you for signing up. Please confirm your email: " +
+                            "http://localhost:8080/api/v1/auth/confirm?token=" + token
+            );
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException("Username already exists");
         } catch (Exception e) {
@@ -51,5 +63,10 @@ public class UserService {
 
     public void deleteUser(Long id){
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void activateUser(long userId) {
+        userRepository.enableUserById(userId);
     }
 }
