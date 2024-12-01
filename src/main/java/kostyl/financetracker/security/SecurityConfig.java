@@ -22,6 +22,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
                         .requestMatchers("/api/v1/analytic/**").permitAll()
+                        .requestMatchers("/api/v1/category-limits/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/transactions/count").permitAll()
                         .requestMatchers("/users/**", "/transactions/**").permitAll()
                         .anyRequest().authenticated()

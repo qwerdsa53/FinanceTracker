@@ -34,7 +34,6 @@ public class AnalyticController {
 
         Dictionary<String, Object> totalAnalytic = new Hashtable<>();
         Long userId = getUserId();
-        System.out.println(userId);
         // Basic data by User
         try {
             totalAnalytic.put("totalAmount", analyticService.getTotalAmountByUser(userId));

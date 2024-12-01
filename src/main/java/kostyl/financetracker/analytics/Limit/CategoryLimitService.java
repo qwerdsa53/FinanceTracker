@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -14,9 +15,13 @@ public class CategoryLimitService {
 
     private final CategoryLimitRepository categoryLimitRepository;
 
-    public List<CategoryLimit> getAllLimitsByUser(Long userId) {
-        return categoryLimitRepository.findByUserId(userId);
+    public List<CategoryLimitDTO> getAllLimitsByUser(Long userId) {
+        List<CategoryLimit> limits = categoryLimitRepository.findByUserId(userId);
+        return limits.stream()
+                .map(limit -> new CategoryLimitDTO(limit.getCategory(), limit.getLimitAmount(), limit.getSpentAmount()))
+                .collect(Collectors.toList());
     }
+
 
     public CategoryLimit getLimitByCategory(Long userId, CategoryType category) {
         return categoryLimitRepository.findByUserIdAndCategory(userId, category);
