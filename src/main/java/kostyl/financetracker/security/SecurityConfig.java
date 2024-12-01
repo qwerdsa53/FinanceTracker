@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/password/recovery").permitAll()
                         .requestMatchers("/api/v1/analytic/**").permitAll()
+                        .requestMatchers("/api/v1/category-limits/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/transactions/count").permitAll()
                         .requestMatchers("/users/**", "/transactions/**").permitAll()
                         .anyRequest().authenticated()

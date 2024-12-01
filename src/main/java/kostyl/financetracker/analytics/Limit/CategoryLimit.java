@@ -22,5 +22,5 @@ public class CategoryLimit {
 
     private Double limitAmount;
 
-    private Double spentAmount = 0.0; // Обновляется при каждой новой транзакции
+    private Double spentAmount; // Обновляется при каждой новой транзакции
 }
