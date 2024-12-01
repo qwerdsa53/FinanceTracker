@@ -1,7 +1,6 @@
 package kostyl.financetracker.controllers;
 
 import kostyl.financetracker.analytics.AnalyticService;
-import kostyl.financetracker.analytics.CategoryStatisticsDTO;
 import kostyl.financetracker.security.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -39,7 +38,7 @@ public class AnalyticController {
             totalAnalytic.put("totalAmount", analyticService.getTotalAmountByUser(userId));
         } catch (Exception e) {
             System.out.println("AAA1");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             totalAnalytic.put("totalAmount",0);
         }
         totalAnalytic.put("totalIncome", analyticService.getTotalIncomeByUser(userId));

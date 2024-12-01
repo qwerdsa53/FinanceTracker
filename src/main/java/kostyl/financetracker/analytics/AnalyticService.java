@@ -63,27 +63,24 @@ public class AnalyticService {
     // Общая сумма по категориям (возвращаем DTO)
 
     public List<CategoryStatisticsDTO> getTotalAmountByCategory(Long userId) {
-        List<CategoryStatisticsDTO> resultAll = transactionRepository.getTotalAmountByCategory(userId)
+        return transactionRepository.getTotalAmountByCategory(userId)
                 .stream()
                 .map(result -> new CategoryStatisticsDTO((CategoryType) result[0], (Double) result[1]))
                 .collect(Collectors.toList());
-        return resultAll;
     }
 
     public List<CategoryStatisticsDTO> getExpensesByCategory(Long userId) {
-        List<CategoryStatisticsDTO> resultAll = transactionRepository.getAmountByCategory(userId, EXPENSE)
+        return transactionRepository.getAmountByCategory(userId, EXPENSE)
                 .stream()
                 .map(result -> new CategoryStatisticsDTO((CategoryType) result[0], (Double) result[1]))
                 .collect(Collectors.toList());
-        return resultAll;
     }
 
     public List<CategoryStatisticsDTO> getIncomeByCategory(Long userId) {
-        List<CategoryStatisticsDTO> resultAll = transactionRepository.getAmountByCategory(userId, INCOME)
+        return transactionRepository.getAmountByCategory(userId, INCOME)
                 .stream()
                 .map(result -> new CategoryStatisticsDTO((CategoryType) result[0], (Double) result[1]))
                 .collect(Collectors.toList());
-        return resultAll;
     }
 
     // Все транзакции пользователя за период
