@@ -1,9 +1,11 @@
 package kostyl.financetracker.controllers;
 
+import kostyl.financetracker.email.EmailService;
+import kostyl.financetracker.email.TokenService;
 import kostyl.financetracker.security.BlacklistService;
 import kostyl.financetracker.security.JwtResponse;
 import kostyl.financetracker.security.JwtTokenProvider;
-import kostyl.financetracker.user.LoginRequest;
+import kostyl.financetracker.user.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,6 +27,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final BlacklistService blacklistService;
+    private final TokenService tokenService;
+    private final EmailService emailService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/login")
@@ -64,5 +71,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token");
         }
     }
-
 }

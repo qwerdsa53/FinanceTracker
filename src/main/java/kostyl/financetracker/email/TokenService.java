@@ -12,31 +12,46 @@ import java.util.UUID;
 @Slf4j
 public class TokenService {
 
-    private final RedisTemplate<String, Long> redisTemplate;
+    private final RedisTemplate<String, Long> redisTemplateForConfirm;
+    private final RedisTemplate<String, Long> redisTemplateForRecovery;
 
-    public TokenService(@Qualifier("uuidRedisTemplate") RedisTemplate<String, Long> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public TokenService(
+            @Qualifier("uuidRedisTemplateForConfirm") RedisTemplate<String, Long> redisTemplateForConfirm,
+            @Qualifier("uuidRedisTemplateForRecovery") RedisTemplate<String, Long> redisTemplateForRecovery
+    ) {
+        this.redisTemplateForConfirm = redisTemplateForConfirm;
+        this.redisTemplateForRecovery = redisTemplateForRecovery;
     }
 
-    public void saveToken(String token, Long userId) {
-        redisTemplate.opsForValue().set("confirmationToken:" + token, userId, Duration.ofHours(24));
+    public String saveConfirmToken(Long userId) {
+        String token = generateToken();
+        redisTemplateForConfirm.opsForValue().set("confirmationToken:" + token, userId, Duration.ofHours(24));
+        return token;
+    }
+
+    public Long getUserIdByConfirmToken(String token) {
+        return redisTemplateForConfirm.opsForValue().get("confirmationToken:" + token);
+    }
+
+    public void deleteConfirmToken(String token) {
+        redisTemplateForConfirm.delete("confirmationToken:" + token);
+    }
+
+    public String saveRecoveryToken(Long userId) {
+        String token = generateToken();
+        redisTemplateForRecovery.opsForValue().set("recoveryToken:" + token, userId, Duration.ofHours(24));
+        return token;
+    }
+
+    public Long getUserIdByRecoveryToken(String token) {
+        return redisTemplateForRecovery.opsForValue().get("recoveryToken:" + token);
+    }
+
+    public void deleteRecoveryToken(String token) {
+        redisTemplateForRecovery.delete("recoveryToken:" + token);
     }
 
     public String generateToken() {
         return UUID.randomUUID().toString();
-    }
-
-    public String addTokenToRedis(Long userId) {
-        String token = generateToken();
-        saveToken(token, userId);
-        return token;
-    }
-
-    public Long getUserIdByToken(String token) {
-        return redisTemplate.opsForValue().get("confirmationToken:" + token);
-    }
-
-    public void deleteToken(String token) {
-        redisTemplate.delete("confirmationToken:" + token);
     }
 }

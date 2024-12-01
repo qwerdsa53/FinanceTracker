@@ -1,12 +1,12 @@
 package kostyl.financetracker.controllers;
 
 import kostyl.financetracker.analytics.AnalyticService;
-import kostyl.financetracker.analytics.CategoryStatisticsDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 @RestController
 @RequestMapping("api/v1/analytic")
@@ -16,7 +16,7 @@ public class AnalyticController {
     private final AnalyticService analyticService;
 
     @GetMapping("/total/{userId}")
-    public Dictionary<String,Object> getTotalAnalytic(
+    public Dictionary<String, Object> getTotalAnalytic(
             @PathVariable Long userId,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
@@ -29,7 +29,7 @@ public class AnalyticController {
         } catch (Exception e) {
             System.out.println("AAA1");
             e.printStackTrace();
-            totalAnalytic.put("totalAmount",0);
+            totalAnalytic.put("totalAmount", 0);
         }
         totalAnalytic.put("totalIncome", analyticService.getTotalIncomeByUser(userId));
         totalAnalytic.put("totalExpenses", analyticService.getTotalExpensesByUser(userId));
@@ -44,7 +44,7 @@ public class AnalyticController {
         } catch (Exception e) {
             System.out.println("AAA2");
             e.printStackTrace();
-            totalAnalytic.put("categorySummary",0);
+            totalAnalytic.put("categorySummary", 0);
         }
         // Data based on Date
         if (startDate != null && endDate != null) {

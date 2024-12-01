@@ -37,7 +37,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     );
 
 
-
     // Общая сумма транзакций пользователя
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.user.id = :userId")
     Double getTotalAmountByUser(@Param("userId") Long userId);
@@ -68,21 +67,21 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     // Статистика по категориям за период
     @Query("""
-           SELECT t.category, SUM(CASE WHEN t.amount > 0 THEN t.amount ELSE 0 END) AS totalIncome,
-                  SUM(CASE WHEN t.amount < 0 THEN t.amount ELSE 0 END) AS totalExpense
-           FROM Transaction t WHERE t.user.id = :userId AND t.date BETWEEN :startDate AND :endDate
-           GROUP BY t.category
-           """)
+            SELECT t.category, SUM(CASE WHEN t.amount > 0 THEN t.amount ELSE 0 END) AS totalIncome,
+                   SUM(CASE WHEN t.amount < 0 THEN t.amount ELSE 0 END) AS totalExpense
+            FROM Transaction t WHERE t.user.id = :userId AND t.date BETWEEN :startDate AND :endDate
+            GROUP BY t.category
+            """)
     List<Object[]> getCategoryStatisticsByDateRange(@Param("userId") Long userId,
                                                     @Param("startDate") LocalDate startDate,
                                                     @Param("endDate") LocalDate endDate);
 
     // Сумма трат за неделю/месяц
     @Query("""
-           SELECT SUM(t.amount)
-           FROM Transaction t
-           WHERE t.user.id = :userId AND t.amount < 0 AND t.date BETWEEN :startDate AND :endDate
-           """)
+            SELECT SUM(t.amount)
+            FROM Transaction t
+            WHERE t.user.id = :userId AND t.amount < 0 AND t.date BETWEEN :startDate AND :endDate
+            """)
     Double getTotalExpensesByUserAndDateRange(@Param("userId") Long userId,
                                               @Param("startDate") LocalDate startDate,
                                               @Param("endDate") LocalDate endDate);

@@ -20,7 +20,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                        .requestMatchers("/api/v1/auth/confirm").authenticated()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/password/recovery").permitAll()
                         .requestMatchers("/api/v1/analytic/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/transactions/count").permitAll()
                         .requestMatchers("/users/**", "/transactions/**").permitAll()

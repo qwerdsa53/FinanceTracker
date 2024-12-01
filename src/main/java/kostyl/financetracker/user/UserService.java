@@ -1,5 +1,6 @@
 package kostyl.financetracker.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import kostyl.financetracker.email.EmailService;
 import kostyl.financetracker.email.TokenService;
@@ -31,7 +32,7 @@ public class UserService {
                 .build();
         try {
             userRepository.save(user);
-            String token = tokenService.addTokenToRedis(user.getId());
+            String token = tokenService.saveConfirmToken(user.getId());
             emailService.sendEmail(
                     user.getEmail(),
                     "Welcome to TrackMyFinance!",
@@ -45,15 +46,15 @@ public class UserService {
         }
     }
 
-    public User getUserById(Long id){
+    public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow();
     }
 
-    public void updateUser(UserDTO userDTO, Long userId){
+    public void updateUser(UserDTO userDTO, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RuntimeException("User not found")
         );
-        if(!Objects.equals(userDTO.getEmail(), user.getEmail())){
+        if (!Objects.equals(userDTO.getEmail(), user.getEmail())) {
             user.setEmail(userDTO.getEmail());
             user.setEnabled(false);
         }
@@ -61,7 +62,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser(Long id){
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
@@ -69,4 +70,16 @@ public class UserService {
     public void activateUser(long userId) {
         userRepository.enableUserById(userId);
     }
+
+    public void updatePassword(Long userId, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        user.setPassword(newPassword);
+        userRepository.save(user);
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 }

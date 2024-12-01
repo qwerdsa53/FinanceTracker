@@ -20,36 +20,36 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public UserDTO getUser(){
+    public UserDTO getUser() {
         Long userId = getUserId();
         User user = userService.getUserById(userId);
         return new UserDTO(user.getUsername(), user.getEmail());
     }
 
     @PutMapping
-    public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO) {
         try {
             userService.updateUser(userDTO, getUserId());
             return ResponseEntity.status(HttpStatus.OK).body("User updated");
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
-        }catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating User: " + e.getMessage());
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(){
+    public ResponseEntity<String> deleteUser() {
         try {
             userService.deleteUser(getUserId());
             return ResponseEntity.status(HttpStatus.OK).body("User deleted");
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
-        }catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting User: " + e.getMessage());
         }
     }

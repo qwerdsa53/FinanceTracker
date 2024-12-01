@@ -24,7 +24,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> findAllForCurrentUser(){
+    public List<Transaction> findAllForCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getPrincipal() instanceof CustomUserDetails userDetails) {
             Long userId = userDetails.getId();
@@ -35,7 +35,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addTransactionForCurrentUser(@RequestBody Transaction transaction){
+    public ResponseEntity<String> addTransactionForCurrentUser(@RequestBody Transaction transaction) {
         Long userId = getUserId();
         try {
             transactionService.addTransactionForCurrentUser(transaction, userId);

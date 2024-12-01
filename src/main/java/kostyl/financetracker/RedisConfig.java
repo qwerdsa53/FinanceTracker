@@ -32,9 +32,16 @@ public class RedisConfig {
     }
 
     @Bean
-    public LettuceConnectionFactory uuidConnectionFactory() {
+    public LettuceConnectionFactory uuidConnectionFactoryForConfirm() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setDatabase(1); // bd №1
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    @Bean
+    public LettuceConnectionFactory uuidConnectionFactoryForRecovery() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setDatabase(2); // bd №2
         return new LettuceConnectionFactory(configuration);
     }
 
@@ -48,9 +55,18 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Long> uuidRedisTemplate(LettuceConnectionFactory uuidConnectionFactory) {
+    public RedisTemplate<String, Long> uuidRedisTemplateForConfirm(LettuceConnectionFactory uuidConnectionFactoryForConfirm) {
         RedisTemplate<String, Long> template = new RedisTemplate<>();
-        template.setConnectionFactory(uuidConnectionFactory);
+        template.setConnectionFactory(uuidConnectionFactoryForConfirm);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericToStringSerializer<>(Long.class));
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, Long> uuidRedisTemplateForRecovery(LettuceConnectionFactory uuidConnectionFactoryForRecovery) {
+        RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(uuidConnectionFactoryForRecovery);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericToStringSerializer<>(Long.class));
         return template;

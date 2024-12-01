@@ -60,12 +60,12 @@ public class TransactionService {
 
     @Transactional
     public void deleteTransaction(Long transactionId, Long userId) {
-        try{
+        try {
             int deleted = transactionRepository.deleteByIdAndUserId(transactionId, userId);
             if (deleted == 0) {
                 throw new NoSuchElementException("Task not found or access denied.");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

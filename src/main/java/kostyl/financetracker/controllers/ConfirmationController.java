@@ -25,13 +25,13 @@ public class ConfirmationController {
 
     @GetMapping("/confirm")
     public ResponseEntity<String> confirmToken(@RequestParam("token") String token) {
-        Long userId = tokenService.getUserIdByToken(token);
+        Long userId = tokenService.getUserIdByConfirmToken(token);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token");
         }
         try {
             userService.activateUser(userId);
-            tokenService.deleteToken(token);
+            tokenService.deleteConfirmToken(token);
             return ResponseEntity.ok("User activated successfully");
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid user ID format.");
