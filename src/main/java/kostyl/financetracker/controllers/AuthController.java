@@ -27,10 +27,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final BlacklistService blacklistService;
-    private final TokenService tokenService;
-    private final EmailService emailService;
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
+
 
 
     @PostMapping("/login")

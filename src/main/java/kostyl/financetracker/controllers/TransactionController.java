@@ -1,8 +1,15 @@
 package kostyl.financetracker.controllers;
 
 import kostyl.financetracker.security.CustomUserDetails;
+import kostyl.financetracker.transaction.CategoryType;
 import kostyl.financetracker.transaction.Transaction;
 import kostyl.financetracker.transaction.TransactionService;
+import kostyl.financetracker.transaction.TransactionType;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
@@ -23,7 +31,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Transaction> findAllForCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getPrincipal() instanceof CustomUserDetails userDetails) {
@@ -37,6 +45,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<String> addTransactionForCurrentUser(@RequestBody Transaction transaction) {
         Long userId = getUserId();
+        log.info("Tr: {}", transaction);
         try {
             transactionService.addTransactionForCurrentUser(transaction, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Task created successfully.");
@@ -49,10 +58,10 @@ public class TransactionController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateTask(@RequestBody Transaction task) {
+    public ResponseEntity<String> updateTransaction(@RequestBody Transaction task) {
         Long userId = getUserId();
         try {
-            transactionService.updateTask(task, userId);
+            transactionService.updateTransaction(task, userId);
             return ResponseEntity.status(HttpStatus.OK).body("Task updated successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
@@ -61,6 +70,29 @@ public class TransactionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating task: " + e.getMessage());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<Transaction>> getTransactions(
+            @RequestParam int page,
+            @RequestParam(defaultValue = "40") int size,
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String category) {
+
+        Sort sort = Sort.by(Sort.Order.desc("date"));
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Long userId = getUserId();
+
+        TransactionType transactionType = (type != null) ? TransactionType.valueOf(type.toUpperCase()) : null;
+        CategoryType categoryType = (category != null) ? CategoryType.valueOf(category.toUpperCase()) : null;
+
+        Page<Transaction> transactions = transactionService.getTransactions(
+                userId, pageable, transactionType, categoryType
+        );
+
+        return ResponseEntity.ok(transactions);
     }
 
     @DeleteMapping("/{id}")

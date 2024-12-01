@@ -1,16 +1,26 @@
 package kostyl.financetracker.transaction;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.domain.Pageable;
+
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RepositoryRestResource(collectionResourceRel = "transactions", path = "transactions")
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+    Page<Transaction> findByUserId(Long userId, Pageable pageable);
+
+    Page<Transaction> findByUserIdAndType(Long userId, TransactionType type, Pageable pageable);
+
+    Page<Transaction> findByUserIdAndCategory(Long userId, CategoryType category, Pageable pageable);
+
+    Page<Transaction> findByUserIdAndTypeAndCategory(Long userId, TransactionType type, CategoryType category, Pageable pageable);
 
     @Modifying
     @Query("SELECT e FROM Transaction e WHERE e.user.id = :userId")

@@ -3,7 +3,9 @@ package kostyl.financetracker.transaction;
 import jakarta.transaction.Transactional;
 import kostyl.financetracker.user.User;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,7 +41,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void updateTask(Transaction transaction, Long userId) {
+    public void updateTransaction(Transaction transaction, Long userId) {
         if (transaction.getId() == null) {
             throw new IllegalArgumentException("Task ID must not be null");
         }
@@ -69,5 +71,17 @@ public class TransactionService {
             e.printStackTrace();
         }
 
+    }
+
+    public Page<Transaction> getTransactions(Long userId, Pageable pageable, TransactionType type, CategoryType category) {
+        if (type != null && category != null) {
+            return transactionRepository.findByUserIdAndTypeAndCategory(userId, type, category, pageable);
+        } else if (type != null) {
+            return transactionRepository.findByUserIdAndType(userId, type, pageable);
+        } else if (category != null) {
+            return transactionRepository.findByUserIdAndCategory(userId, category, pageable);
+        } else {
+            return transactionRepository.findByUserId(userId, pageable);
+        }
     }
 }
