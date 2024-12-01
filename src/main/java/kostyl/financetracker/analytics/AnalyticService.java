@@ -86,10 +86,6 @@ public class AnalyticService {
         return resultAll;
     }
 
-    public CategoryStatisticsDTO getCategorySummary(Long userId) {
-        return null;
-    }
-
     // Все транзакции пользователя за период
     public List<Object[]> getTransactionsByUserAndDateRange(Long userId, LocalDate startDate, LocalDate endDate) {
         return transactionRepository.getTransactionsByUserAndDateRange(userId, startDate, endDate);
